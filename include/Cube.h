@@ -55,14 +55,6 @@ class Cube {
         // Rotate a specific face of the cube
         void rotateFace(const std::string& move);
 
-        // Helper functions to rotate edges and corners
-        void rotateEdges(const std::array<int, 4>& indices, bool inverse = false);
-        void rotateCorners(const std::array<int, 4>& indices, bool inverse = false);
-
-
-
-        
-        
 };
 
 #endif 

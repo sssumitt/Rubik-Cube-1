@@ -19,9 +19,7 @@ const FaceCube::EdgeMapping FaceCube::edgeMappings[12] = {
     {B, 3, R, 5},  // BR 11
 };
 
- //URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB
 
-// Corner mappings
 const FaceCube::CornerMapping FaceCube::cornerMappings[8] = {
     {U, 8, R, 0, F, 2}, // URF  0
     {U, 6, F, 0, L, 2}, // UFL  1
@@ -38,44 +36,44 @@ const FaceCube::CornerMapping FaceCube::cornerMappings[8] = {
     
 };
 
+
 // Edge colors in solved state
-const Color FaceCube::edgeColors[12][2] = {
-    {w, r},  // UR
-    {w, g},  // UF
-    {w, o},  // UL
-    {w, b},  // UB
+const char FaceCube::edgeColors[12][2] = {
+    {'W', 'R'}, // UR
+    {'W', 'G'}, // UF
+    {'W', 'O'}, // UL
+    {'W', 'B'}, // UB
 
-    {y, r},  // DR
-    {y, g},  // DF
-    {y, o},  // DL
-    {y, b},  // DB
+    {'Y', 'R'}, // DR
+    {'Y', 'G'}, // DF
+    {'Y', 'O'}, // DL
+    {'Y', 'B'}, // DB
 
-    {g, r},  // FR
-    {g, o},  // FL
+    {'G', 'R'}, // FR
+    {'G', 'O'}, // FL
 
-    {b, o},  // BL
-    {b, r}   // BR
+    {'B', 'O'}, // BL
+    {'B', 'R'}, // BR
 };
 
 // Corner colors in solved state
-const Color FaceCube::cornerColors[8][3] = {
-    {w, r, g},  // URF
-    {w, g, o},  // UFL
-    {w, o, b},  // ULB
-    {w, b, r},  // UBR
-    {y, g, r},  // DFR
-
-    {y, o, g},  // DLF
-
-    {y, b ,o},  // DBL
-    {y, r, b}   // DRB
+const char FaceCube::cornerColors[8][3] = {
+    {'W', 'R', 'G'}, // URF
+    {'W', 'G', 'O'}, // UFL
+    {'W', 'O', 'B'}, // ULB
+    {'W', 'B', 'R'}, // UBR
+    {'Y', 'G', 'R'}, // DFR
+    {'Y', 'O', 'G'}, // DLF
+    {'Y', 'B', 'O'}, // DBL
+    {'Y', 'R', 'B'}, // DRB
 };
+
 
 FaceCube::FaceCube() {
     // Initialize facelets to default colors
     for (int face = U; face <= B; ++face) {
         for (int index = 0; index < 9; ++index) {
-            facelets[face][index] = static_cast<Color>(face);
+            facelets[face][index] = colors[face];
         }
     }
 
@@ -83,88 +81,69 @@ FaceCube::FaceCube() {
 }
 
 void FaceCube::updateFacelets(const Cube &cube ) {
-    // Reset facelets to default colors
-    for (int face = U; face <= B; ++face) {
-        for (int index = 0; index < 9; ++index) {
-            facelets[face][index] = static_cast<Color>(face);
+
+    // Reset center facelets 
+    for (int face = 0; face < 6; ++face) {
+        facelets[face][4] = colors[face] ;
+    }
+
+    // Update edges 
+    for(int i = 0 ; i< EDGE_COUNT ; i++) {
+
+        int pos = cube.edgePositions[i] ; // get the edge at ith pos 
+        char ori = cube.edgeOrientations[i] ; 
+        // std::cout<< "pos : " << pos << " ori : " << static_cast<int>(ori) << std::endl;
+        
+
+        EdgeMapping em_i  = edgeMappings[i] ;
+
+        char c1 = edgeColors[pos][0] ; 
+        char c2 = edgeColors[pos][1]  ; 
+
+        if(static_cast<int>(ori) == 1)  {
+            char temp = c1 ; 
+            c1 = c2 ; 
+            c2 = temp ; 
         }
-    }
 
-    // std::cout<< " Entered updateFacelets " << std::endl ;
-
-    // std::cout<<"EdgeP :" ;
-
-    // for(int i = 0 ; i< 12 ; i++)    std::cout << cube.edgePositions[i] << " ";
-    // std::cout<<"\n" ;
-
-    // std::cout<<"EdgeO :" ;
-    // for(int i = 0 ; i< 12 ; i++)    std::cout << cube.edgeOrientations[i] << " " ;
-    // std::cout<<"\n" ;
-
-    // std::cout<<"CornerP :" ;
-    //  for(int i = 0 ; i< 8 ; i++)    std::cout << cube.cornerPositions[i] << " ";
-    // std::cout<<"\n" ;
-
-    // std::cout<<"CornerO :" ;
-    // for(int i = 0 ; i< 8 ; i++)    std::cout << cube.cornerOrientations[i] << " " ;
-    // std::cout<<"\n" ;
-
-    // Update edges
-    for (int i = 0; i < 12; ++i) {
-
-        int pos = cube.edgePositions[i] ;     // Position where edge i is currently located  
-        
-       
-        char ori = cube.edgeOrientations[i];        // Orientation of edge i 
-      
-
-        EdgeMapping mapping = edgeMappings[pos];
-
-        Color color1 = edgeColors[i][0];
-        Color color2 = edgeColors[i][1];
-
-
-
-        if (ori == '1')
-            std::swap(color1, color2);
-        
-
-        facelets[mapping.face1][mapping.index1] = color1;
-        facelets[mapping.face2][mapping.index2] = color2;
+        facelets[em_i.face1][em_i.index1]   = c1 ;
+        facelets[em_i.face2][em_i.index2]   = c2 ;   
 
     }
-
+    
     // Update corners
-    for (int i = 0; i < 8; ++i) {
-        int pos = cube.cornerPositions[i];         // Position where corner i is currently located
-        char ori = cube.cornerOrientations[i];      // Orientation of corner i
-        CornerMapping mapping = cornerMappings[pos];
-
-        Color color1 = cornerColors[i][0];
-        Color color2 = cornerColors[i][1];
-        Color color3 = cornerColors[i][2];
-
-        if (ori == '1') {
-            // Rotate colors clockwise
-            Color temp = color1;
-            color1 = color3;
-            color3 = color2;
-            color2 = temp;
-
-        } else if (ori == '2') {
-            // Rotate colors counter-clockwise
-            Color temp = color1;
-            color1 = color2;
-            color2 = color3;
-            color3 = temp;
-        }
+    for (int i = 0; i < CORNER_COUNT ; ++i) {
+        int pos = cube.cornerPositions[i];         
+        char ori = cube.cornerOrientations[i];
       
-        
+        // std::cout<< "pos : " << pos << " ori : " << static_cast<int>(ori)  << std::endl;
 
-        facelets[mapping.face1][mapping.index1] = color1;
-        facelets[mapping.face2][mapping.index2] = color2;
-        facelets[mapping.face3][mapping.index3] = color3;
+        CornerMapping em_i = cornerMappings[i];
+
+        char c1 = cornerColors[pos][0];
+        char c2 = cornerColors[pos][1];
+        char c3 = cornerColors[pos][2];
+
+        //clockwise 
+        if(static_cast<int>(ori) == 1) {
+            char temp = c1 ; 
+            c1 = c3 ; 
+            c3 = c2 ; 
+            c2 = temp ; 
+        }
+        //counter clockwise   
+        if(static_cast<int>(ori) == 2) {
+            char temp  = c1 ; 
+            c1 = c2 ; 
+            c2 = c3 ; 
+            c3 = temp ; 
+        }
+
+        facelets[em_i.face1][em_i.index1] = c1 ; 
+        facelets[em_i.face2][em_i.index2] = c2 ;
+        facelets[em_i.face3][em_i.index3] = c3 ;
     }
+
 
 }
 
@@ -172,20 +151,20 @@ void FaceCube::updateFacelets(const Cube &cube ) {
 
 
 // Helper function to find edge
-std::tuple<int, int> FaceCube::findEdge(Color color1, Color color2) const {
+std::tuple<int, char> FaceCube::findEdge(char color1, char color2) const {
     for (int i = 0; i < EDGE_COUNT; ++i) {
         if ((edgeColors[i][0] == color1 && edgeColors[i][1] == color2)) {
-            return std::make_tuple(i, 0); // Position, Orientation 0
+            return std::make_tuple(i, '0'); // Position, Orientation 0
         }
         if ((edgeColors[i][0] == color2 && edgeColors[i][1] == color1)) {
-            return std::make_tuple(i, 1); // Position, Orientation 1
+            return std::make_tuple(i, '1'); // Position, Orientation 1
         }
     }
     throw std::invalid_argument("Edge not found");
 }
 
 // Helper function to find corner
-std::tuple<int, int> FaceCube::findCorner(Color color1, Color color2, Color color3) const {
+std::tuple<int, char> FaceCube::findCorner(char color1, char color2, char color3) const {
     for (int i = 0; i < CORNER_COUNT; ++i) {
         // Check all three possible orientations
         if ((cornerColors[i][0] == color1 && cornerColors[i][1] == color2 && cornerColors[i][2] == color3)) {
@@ -207,10 +186,11 @@ Cube FaceCube::getCube() const {
     for(int i = 0; i < EDGE_COUNT; i++) {
        EdgeMapping mapping = edgeMappings[i];
 
-        Color color1 = facelets[mapping.face1][mapping.index1];
-        Color color2 = facelets[mapping.face2][mapping.index2];
+        char color1 = facelets[mapping.face1][mapping.index1];
+        char color2 = facelets[mapping.face2][mapping.index2];
         
-        int pos, ori;
+        int pos ;
+        char ori;
 
         try {
             std::tie(pos, ori) = findEdge(color1, color2);
@@ -226,11 +206,12 @@ Cube FaceCube::getCube() const {
     for(int i = 0; i < CORNER_COUNT; i++) {
         CornerMapping mapping = cornerMappings[i];
 
-        Color color1 = facelets[mapping.face1][mapping.index1];
-        Color color2 =  facelets[mapping.face2][mapping.index2];
-        Color color3 =  facelets[mapping.face3][mapping.index3];
+        char color1 = facelets[mapping.face1][mapping.index1];
+        char color2 = facelets[mapping.face2][mapping.index2];
+        char color3 = facelets[mapping.face3][mapping.index3];
 
-        int pos, ori;
+        int pos;
+        char ori;
 
         try {
             std::tie(pos, ori) = findCorner(color1, color2, color3);
@@ -246,21 +227,25 @@ Cube FaceCube::getCube() const {
 }
 
 
-std::string FaceCube::colorToString(Color color) const {
+std::string FaceCube::colorToString(char color) const {
     switch (color) {
-        case U: return "\033[1;37mW\033[0m"; // White
-        case R: return "\033[1;31mR\033[0m"; // Red
-        case F: return "\033[1;32mG\033[0m"; // Green
-        case D: return "\033[1;33mY\033[0m"; // Yellow
-        case L: return "\033[1;35mO\033[0m"; // Orange-purple
-        case B: return "\033[1;34mB\033[0m"; // Blue
+
+        case 'W': return "\033[1;37mW\033[0m"; // White
+        case 'R': return "\033[1;31mR\033[0m"; // Red
+        case 'G': return "\033[1;32mG\033[0m"; // Green
+        case 'Y': return "\033[1;33mY\033[0m"; // Yellow
+        case 'O': return "\033[1;35mO\033[0m"; // Orange-purple
+        case 'B': return "\033[1;34mB\033[0m"; // Blue
+
         default: return "?";
     }
 }
 
 std::string FaceCube::getFacelets(const Cube &cube) {
     updateFacelets(cube);
+
     std::string faceletString;
+
     for (int face = U; face <= B; ++face) {
         for (int index = 0; index < 9; ++index) {
             faceletString += colorToString(facelets[face][index]);
@@ -270,6 +255,7 @@ std::string FaceCube::getFacelets(const Cube &cube) {
 }
 
 void FaceCube::printFacelets(const Cube &cube) {
+    updateFacelets(cube) ;
   
     // Print Up face
     std::cout << "    " << colorToString(facelets[U][0]) << colorToString(facelets[U][1]) << colorToString(facelets[U][2]) << "\n";

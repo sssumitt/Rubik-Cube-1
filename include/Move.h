@@ -1,6 +1,8 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+#define MOVE_COUNT  18
+
 enum  class Move {
     U, U_PRIME, U2,
     D, D_PRIME, D2,

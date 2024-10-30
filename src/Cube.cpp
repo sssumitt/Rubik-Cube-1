@@ -8,6 +8,38 @@
 #include "Corner.h"
 // Define the permutation and orientation for each move
 
+static const Corner  cpU[8]  = { UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB };
+static const  char  coU[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static const Edge       epU[12] = { UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR };
+static const  char  eoU[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static const Corner     cpR[8]  = { DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR };
+static const  char  coR[8]  = { 2, 0, 0, 1, 1, 0, 0, 2 };
+static const Edge       epR[12] = { FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR };
+static const  char  eoR[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static const Corner     cpF[8]  = { UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB };
+static const  char  coF[8]  = { 1, 2, 0, 0, 2, 1, 0, 0 };
+static const Edge       epF[12] = { UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR };
+static const char  eoF[12] = { 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0 };
+
+static const Corner     cpD[8]  = { URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR };
+static const  char  coD[8]  = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static const Edge       epD[12] = { UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR };
+static const  char  eoD[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static const Corner     cpL[8]  = { URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB };
+static const  char  coL[8]  = { 0, 1, 2, 0, 0, 2, 1, 0 };
+static const Edge       epL[12] = { UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR };
+static const  char  eoL[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static const Corner     cpB[8]  = { URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL };
+static const  char  coB[8]  = { 0, 0, 1, 2, 0, 0, 2, 1 };
+static const Edge       epB[12] = { UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB };
+static const  char  eoB[12] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 };
+
+
+
 std::unordered_map<Move, std::string> moveToStringMap = {
     {Move::U, "U"},     {Move::U_PRIME, "U'"}, {Move::U2, "U2"},
     {Move::D, "D"},     {Move::D_PRIME, "D'"}, {Move::D2, "D2"},
@@ -20,23 +52,143 @@ std::unordered_map<Move, std::string> moveToStringMap = {
 Cube::Cube() {
     // Initialize edge positions and orientations
     for (int i = UR; i <= BR; i++) {
-        edgePositions[i] = static_cast<Edge>(i);
-        edgeOrientations[i] = '0';
+        edgePositions[i] = i;
+        edgeOrientations[i] = 0;
     }
     // Initialize corner positions and orientations
     for (int i = URF; i <= DRB; i++) {
-        cornerPositions[i] = static_cast<Corner>(i);
-        cornerOrientations[i] = '0';
+        cornerPositions[i] = i;
+        cornerOrientations[i] = 0;
     }
 
 
 }
 
 void Cube::applyMove(const std::string& move) {
+
     std::istringstream iss(move);
     std::string singleMove;
     while (iss >> singleMove) {
         rotateFace(singleMove);
+        std::cout << "ep :";
+        for(int i = 0; i < EDGE_COUNT; i++) {
+            std::cout << edgePositions[i] << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "eo :";
+        for(int i = 0; i < EDGE_COUNT; i++) {
+            std::cout << static_cast<int>(edgeOrientations[i]) << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "cp :";
+        for(int i = 0; i < CORNER_COUNT; i++) {
+            std::cout << cornerPositions[i] << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "co :";
+        for(int i = 0; i < CORNER_COUNT; i++) {
+            std::cout << static_cast<int>( cornerOrientations[i] ) << " ";
+        }
+        std::cout << std::endl;
+
+    }
+}
+
+void Cube::rotateFace(const std::string& singleMove)  {
+    if(singleMove[1] == '2') {
+        rotateFace(singleMove.substr(0, 1));
+        rotateFace(singleMove.substr(0, 1));
+        return;
+    }
+    else if(singleMove[1] == '\'') {
+        rotateFace(singleMove.substr(0, 1));
+        rotateFace(singleMove.substr(0, 1));
+        rotateFace(singleMove.substr(0, 1));
+        return;
+    }
+    
+    // Temporary variables to hold the current state
+    std::array<int, 8> tempCornerPosition;
+    std::array<char, 8> tempCornerOrientation;
+    std::array<int , 12> tempEdgePosition;
+    std::array<char, 12> tempEdgeOrientation;
+    // Copy current state to temporary arrays
+    for (int i = 0; i < 8; ++i) {
+        tempCornerPosition[i] = cornerPositions[i];
+        tempCornerOrientation[i] = cornerOrientations[i];
+    }
+    for (int i = 0; i < 12; ++i) {
+        tempEdgePosition[i] = edgePositions[i];
+        tempEdgeOrientation[i] = edgeOrientations[i];
+    }
+    
+    // Select the correct transformations based on the input move
+    switch (singleMove[0]) {
+        case 'U':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpU[i]];
+                cornerOrientations[i] = ( tempCornerOrientation[cpU[i]] + coU[i] ) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epU[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epU[i]] + eoU[i]) % 2;
+            }
+            break;
+
+        case 'R':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpR[i]];
+                cornerOrientations[i] = (tempCornerOrientation[cpR[i]] + coR[i]) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epR[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epR[i]] + eoR[i]) % 2;
+            }
+            break;
+
+        case 'F':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpF[i]];
+                cornerOrientations[i] = (tempCornerOrientation[cpF[i]] + coF[i]) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epF[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epF[i]] + eoF[i]) % 2;
+            }
+            break;
+
+        case 'D':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpD[i]];
+                cornerOrientations[i] = (tempCornerOrientation[cpD[i]] + coD[i]) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epD[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epD[i]] + eoD[i]) % 2;
+            }
+            break;
+
+        case 'L':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpL[i]];
+                cornerOrientations[i] = (tempCornerOrientation[cpL[i]] + coL[i]) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epL[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epL[i]] + eoL[i]) % 2;
+            }
+            break;
+
+        case 'B':
+            for (int i = 0; i < 8; ++i) {
+                cornerPositions[i] = tempCornerPosition[cpB[i]];
+                cornerOrientations[i] = (tempCornerOrientation[cpB[i]] + coB[i]) % 3;
+            }
+            for (int i = 0; i < 12; ++i) {
+                edgePositions[i] = tempEdgePosition[epB[i]];
+                edgeOrientations[i] = (tempEdgeOrientation[epB[i]] + eoB[i]) % 2;
+            }
+            break;
     }
 }
 
@@ -53,6 +205,7 @@ bool Cube::isSolved() const {
         }
     }
     return true;
+
 }
 
 std::string Cube::moveToString(Move move) const{
@@ -63,178 +216,7 @@ std::string Cube::moveToString(Move move) const{
     return "Invalid Move";
 }
 
-void Cube::rotateFace(const std::string& move) {
-    // Parse the move
-    bool inverse = false;
-    int turns = 1;
-    std::string face = move;
 
-    if (move.length() > 1) {
-        if (move[1] == '\'') {
-            inverse = true;
-            face = move.substr(0, 1);
-        } else if (move[1] == '2') {
-            turns = 2;
-            face = move.substr(0, 1);
-        }
-    }
- 
-   switch (face[0]) {
-        case 'U':
-            rotateEdges({UR, UF, UL, UB}, inverse);
-            rotateCorners({URF, UFL, ULB, UBR}, inverse);
-            if(turns == 2) {
-                rotateEdges({UR, UF, UL, UB}, inverse);
-                rotateCorners({URF, UFL, ULB, UBR}, inverse);
-            }
-            // U moves do not affect orientations
-            break;
-        case 'D':
-            rotateEdges({DR, DF, DL, DB}, inverse);
-            rotateCorners({DFR, DLF, DBL, DRB}, inverse);
-            if(turns == 2) {
-                rotateEdges({DR, DF, DL, DB}, inverse);
-                rotateCorners({DFR, DLF, DBL, DRB}, inverse);
-            }
-            // D moves do not affect orientations
-            break;
-        case 'F':
-            if(turns == 2) {
-                rotateEdges({UF, FR, DF, FL}, inverse);
-                rotateCorners({UFL ,URF, DFR, DLF}, inverse);
-
-                rotateEdges({UF, FR, DF, FL}, inverse);
-                rotateCorners({UFL ,URF, DFR, DLF}, inverse);
-                
-                break;
-            }else {
-                rotateEdges({UF, FR, DF, FL}, inverse);        // Corrected edge order
-                rotateCorners({UFL ,URF, DFR, DLF}, inverse);  // Corrected corner order
-                // Update edge orientations for F move
-                for (int idx : {UF, FR, DF, FL}) {             // Corrected edge indices
-                    edgeOrientations[idx] ^= 1;                // Flip edge orientation
-                }
-                // Update corner orientations for F move
-
-                cornerOrientations[UFL] = ((cornerOrientations[UFL] - '0' +  1) % 3)+ '0';
-                cornerOrientations[URF] = ((cornerOrientations[URF] - '0' +  2) % 3)+ '0';
-                cornerOrientations[DFR] = ((cornerOrientations[DFR] - '0' +  1) % 3)+ '0';
-                cornerOrientations[DLF] = ((cornerOrientations[DLF] - '0' +  2) % 3)+ '0';
-            }
-            
-            break;
-        case 'B':
-            if(turns == 2) {
-                rotateEdges({UB, BR, DB ,BL}, inverse);
-                rotateCorners({ULB, UBR , DRB, DBL}, inverse);
-                rotateEdges({UB, BR, DB ,BL}, inverse);
-                rotateCorners({ULB, UBR , DRB, DBL}, inverse);
-            }
-            else {
-                rotateEdges({UB, BR, DB ,BL}, inverse);
-                rotateCorners({ULB, UBR , DRB, DBL}, inverse);
-
-                // Update edge orientations for B move
-                for (int idx : {UB, BR, DB ,BL}) {
-                    edgeOrientations[idx] ^= 1;  // Flip edge orientation
-                }
-
-                // Update corner orientations for B move
-                cornerOrientations[ULB] = ((cornerOrientations[ULB] - '0' +  2) % 3) + '0';
-                cornerOrientations[UBR] = ((cornerOrientations[UBR] - '0' +  1) % 3) + '0';
-                cornerOrientations[DRB] = ((cornerOrientations[DRB] - '0' +  2) % 3) + '0';
-                cornerOrientations[DBL] = ((cornerOrientations[DBL] - '0' +  1) % 3) + '0';
-
-            }
-        
-            break;
-        case 'L':
-            if(turns == 2 ) {
-    
-                rotateEdges({FL,DL,BL,UL}, inverse);
-                rotateCorners({UFL, DLF, DBL, ULB}, inverse);
-                
-                rotateEdges({FL,DL,BL,UL}, inverse);
-                rotateCorners({UFL, DLF, DBL, ULB}, inverse);
-
-            }
-
-            else {
-                rotateEdges({FL,DL,BL,UL}, inverse);
-                rotateCorners({UFL, DLF, DBL, ULB}, inverse);
-
-                // Update corner orientations for L move
-                cornerOrientations[UFL] = ((cornerOrientations[UFL]  - '0'+  2) % 3) + '0';  //dlf 
-                cornerOrientations[DLF] = ((cornerOrientations[DLF]  - '0'+  1) % 3) + '0';  //dbl
-                cornerOrientations[DBL] = ((cornerOrientations[DBL]  - '0'+  2) % 3) + '0';  //ulb
-                cornerOrientations[ULB] = ((cornerOrientations[ULB]  - '0'+  1) % 3) + '0';  //ufl
-            }
-                
-            break;
-        case 'R':
-            if(turns == 2 ) {
-                rotateEdges({FR, DR, BR, UR}, inverse);
-                rotateCorners({DFR ,DRB,UBR, URF}, inverse);
-                rotateEdges({FR, DR, BR, UR}, inverse);
-                rotateCorners({DFR ,DRB,UBR, URF}, inverse);
-            }
-            else {
-                rotateEdges({FR, DR, BR, UR}, inverse);
-                rotateCorners({DFR ,DRB,UBR, URF}, inverse);
-
-                
-                // // Update corner orientations for R move
-                cornerOrientations[URF] = ( ((cornerOrientations[URF] -'0' )+  1 ) % 3 ) + '0'; // UBR
-                cornerOrientations[UBR] = ( ((cornerOrientations[UBR] -'0' )+  2 ) % 3 ) + '0'; // URF
-                cornerOrientations[DRB] = ( ((cornerOrientations[DRB] -'0' )+  1 ) % 3 ) + '0'; // UBR
-                cornerOrientations[DFR] = ( ((cornerOrientations[DFR] -'0' )+  2 ) % 3 ) + '0'; // URF
-
-            }
-            
-            break;
-        default:
-            std::cerr << "Move " << move << " not implemented.\n";
-            return;
-    }
-}
-
-
-void Cube::rotateEdges(const std::array<int, 4>& indices, bool inverse) {
-    if (!inverse) {
-        int tempPos = edgePositions[indices[0]];
-
-        for (int i = 0; i < 3; ++i) edgePositions[indices[i]] = edgePositions[indices[i + 1]];
-        
-        edgePositions[indices[3]] = tempPos;
-      
-    } else {
-        int tempPos = edgePositions[indices[3]];
-
-        for (int i = 3; i > 0; --i)  edgePositions[indices[i]] = edgePositions[indices[i - 1]];
-        
-        edgePositions[indices[0]] = tempPos;
-     
-    }
-}
-
-void Cube::rotateCorners(const std::array<int, 4>& indices, bool inverse) {
-    if (!inverse) {
-        int tempPos = cornerPositions[indices[0]];
-        for (int i = 0; i < 3; ++i) {
-            cornerPositions[indices[i]] = cornerPositions[indices[i + 1]];
-        }
-        cornerPositions[indices[3]] = tempPos;
-
-    } else {
-        int tempPos = cornerPositions[indices[3]];
-        for (int i = 3; i > 0; --i) {
-            cornerPositions[indices[i]] = cornerPositions[indices[i - 1]];
-      
-        }
-        cornerPositions[indices[0]] = tempPos;
-      
-    }
-}
 
 // Template functions for rotating corners and edges
 template <size_t N>

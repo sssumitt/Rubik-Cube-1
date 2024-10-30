@@ -8,31 +8,22 @@
 
 
 
+
 int main() {
-    Cube cube;
+    Cube cube ;
 
+    for(int i =0 ; i< 18 ; i++) {
+        Move m = static_cast<Move>(i) ;
+        
+        std::cout << "Move : " << cube.moveToString(m) << std::endl;
+        
+        cube.applyMove(cube.moveToString(m)) ;
 
-    FaceCube fc;
-    fc.updateFacelets(cube);
-    fc.printFacelets(cube);
-
-
-    // CoordCube c = c.get_CoordCube(cube);
-   
-
-    // Cube convert = c.getCube(c) ;
-    // std::cout<< "Edge: ";
-    // for(int i = 0 ; i< EDGE_COUNT ; i++){
-    //     std::cout << convert.edgePositions[i] << " ";
-    // }
-
-    // std::cout<<std::endl;
-
-    // FaceCube fc2;
-    // fc2.updateFacelets(convert);
-    // fc2.printFacelets(convert);
-    
-
+        FaceCube fc;
+        fc.updateFacelets(cube) ;
+        fc.printFacelets(cube) ;
+        
+    }
     
     return 0 ; 
 }
