@@ -63,6 +63,28 @@ Cube::Cube() {
 
 
 }
+void Cube::display() const{
+    std::cout << "ep : ";
+    for(int i = 0; i < EDGE_COUNT; i++) {
+        std::cout << edgePositions[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "eo : ";
+    for(int i = 0; i < EDGE_COUNT; i++) {
+        std::cout << static_cast<int>(edgeOrientations[i]) << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "cp : ";
+    for(int i = 0; i < CORNER_COUNT; i++) {
+        std::cout << cornerPositions[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "co : ";
+    for(int i = 0; i < CORNER_COUNT; i++) {
+        std::cout << static_cast<int>(cornerOrientations[i]) << " ";
+    }
+    std::cout << std::endl;
+}
 
 void Cube::applyMove(const std::string& move) {
 
@@ -70,27 +92,6 @@ void Cube::applyMove(const std::string& move) {
     std::string singleMove;
     while (iss >> singleMove) {
         rotateFace(singleMove);
-        std::cout << "ep :";
-        for(int i = 0; i < EDGE_COUNT; i++) {
-            std::cout << edgePositions[i] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "eo :";
-        for(int i = 0; i < EDGE_COUNT; i++) {
-            std::cout << static_cast<int>(edgeOrientations[i]) << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "cp :";
-        for(int i = 0; i < CORNER_COUNT; i++) {
-            std::cout << cornerPositions[i] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "co :";
-        for(int i = 0; i < CORNER_COUNT; i++) {
-            std::cout << static_cast<int>( cornerOrientations[i] ) << " ";
-        }
-        std::cout << std::endl;
-
     }
 }
 
@@ -410,7 +411,7 @@ short Cube::getURtoUL() const{
 
 void Cube::setURtoUL(short idx) {
     int x, e, j, k;
-    std::array<Edge, 3> edge3 = {UR, UF, UL}; 
+    std::array<Edge, 3> edge3 = {UR, UF, UL};
     int b = idx % 6; // Permutation
     int a = idx / 6; // Combination
     for(e = 0; e < EDGE_COUNT; e++) {
@@ -509,7 +510,7 @@ void Cube::setURFtoDLF(short idx) {
             cornerPositions[j] = otherCorner[x++];
 }
 
-short Cube::getURtoDF() const {
+int Cube::getURtoDF() const {
     int a = 0, x = 0, b = 0;
     std::array<Edge, 6> edge6;
     for (int j = UR; j <= BR; j++)
@@ -529,7 +530,7 @@ short Cube::getURtoDF() const {
     return 720 * a + b;
 }
 
-void Cube::setURtoDF(short idx) {
+void Cube::setURtoDF(int idx) {
     int x, j;
     std::array<Edge, 6> edge6 = {UR, UF, UL, UB, DR, DF};
     std::array<Edge, 6> otherEdge = {DL, DB, FR, FL, BL, BR};

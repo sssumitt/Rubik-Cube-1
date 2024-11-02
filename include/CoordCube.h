@@ -24,9 +24,8 @@ class Cube;
 class CoordCube {
     public: 
         CoordCube();
-        CoordCube get_CoordCube(const Cube &cube);
-        Cube getCube(const CoordCube &c) const;
-    
+        void set_CoordCube(Cube &cube);
+        Cube getCube() const;
         short twist;
         short flip;
         short parity;

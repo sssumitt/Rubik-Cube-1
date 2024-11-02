@@ -8,36 +8,62 @@ CoordCube::CoordCube() {
     // for solved cube 
     twist = 0;
     flip = 0;
+
     parity = 0;
+
     FRtoBR = 0;
     URFtoDLF = 0;
     URtoUL = 0;
     UBtoDF = 114;
     URtoDF = 0;
 
+
+}
+void displayCoord(const Cube &cube) {
+ 
+    std::cout << "Twist : " << cube.getTwist() << std::endl;
+    std::cout << "Flip : " << cube.getFlip() << std::endl;
+
+    std::cout << "Parity : " << cube.cornerParity() << std::endl;
+    
+    std::cout << "FRtoBR : " << cube.getFRtoBR() << std::endl;
+    std::cout << "URFtoDLF : " << cube.getURFtoDLF() << std::endl;
+    std::cout << "URtoUL : " << cube.getURtoUL() << std::endl;
+    std::cout << "UBtoDF : " << cube.getUBtoDF() << std::endl;
+    std::cout << "URtoDF : " << cube.getURtoDF() << std::endl;
+    
 }
 
-CoordCube CoordCube::get_CoordCube(const Cube &cube) {
-    CoordCube c;
-    c.twist = cube.getTwist();
-    c.flip = cube.getFlip();
-    c.parity = cube.cornerParity();
-    c.FRtoBR = cube.getFRtoBR();
-    c.URFtoDLF = cube.getURFtoDLF();
-    c.URtoUL = cube.getURtoUL();
-    c.UBtoDF = cube.getUBtoDF();
-    c.URtoDF = cube.getURtoDF();
-    return c;
+void CoordCube::set_CoordCube(Cube &cube) {
+    twist = cube.getTwist();
+    flip = cube.getFlip();
+    parity = cube.cornerParity();
+    FRtoBR = cube.getFRtoBR();
+    URFtoDLF = cube.getURFtoDLF();
+    URtoUL = cube.getURtoUL();
+    UBtoDF = cube.getUBtoDF();
+    URtoDF = cube.getURtoDF();
 }
 
-Cube CoordCube::getCube(const CoordCube &c) const{
+Cube CoordCube::getCube() const{
     Cube cube;
-    cube.setTwist(c.twist);
-    cube.setFlip(c.flip);
-    cube.setFRtoBR(c.FRtoBR);
-    cube.setURFtoDLF(c.URFtoDLF);
-    cube.setURtoUL(c.URtoUL);
-    cube.setUBtoDF(c.UBtoDF);
-    cube.setURtoDF(c.URtoDF);
+    cube.setTwist(twist);
+    cube.setFlip(flip);
+
+    cube.display();
+
+    cube.setFRtoBR(FRtoBR);
+     std::cout << "FRtoBR : " << FRtoBR << std::endl;
+    cube.display();
+    cube.setURFtoDLF(URFtoDLF);
+    cube.setURtoUL(URtoUL);
+    std::cout << "getURtoUL : " << URtoUL<< std::endl;
+    cube.display();
+    cube.setUBtoDF(UBtoDF);
+         std::cout << "getUBtoDF : " << UBtoDF<< std::endl;
+    cube.display();
+    cube.setURtoDF(URtoDF);
+      std::cout << "getURtoDF : " << URtoDF << std::endl;
+    cube.display();
     return cube;
 }

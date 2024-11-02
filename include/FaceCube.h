@@ -49,7 +49,7 @@ private:
     static const EdgeMapping edgeMappings[12];
     static const CornerMapping cornerMappings[8];
 
-    char colors[6] = {'W', 'R', 'G', 'Y', 'O', 'B'};
+    char colors[6] = {'W', 'R', 'G', 'Y', 'O', 'B'};// U-W R-R F-G D-Y L-O B-B
 
     std::tuple<int, char> findEdge(char color1, char color2) const;
     std::tuple<int, char> findCorner(char color1, char color2, char color3) const;

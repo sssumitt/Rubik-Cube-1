@@ -33,7 +33,7 @@ class Cube {
         short getFlip() const;    
         short getFRtoBR() const;
         short getURFtoDLF() const;
-        short getURtoDF() const;
+        int getURtoDF() const;
         short getURtoUL() const;
         short getUBtoDF() const;
         int getURFtoDLB() const;
@@ -44,13 +44,15 @@ class Cube {
         void setFlip( short flip ) ;
         void setFRtoBR( short frToBr ) ;
         void setURFtoDLF( short urfToDlf ) ;
-        void setURtoDF( short urToDf ) ;
+        void setURtoDF( int urToDf ) ;
         void setURtoUL( short urToUl ) ;
         void setUBtoDF( short ubToDf ) ;
         void setURFtoDLB(int idx);
         void setURtoBR(int idx) ;
 
+        void display() const;
         int verify();
+
 
         // Rotate a specific face of the cube
         void rotateFace(const std::string& move);

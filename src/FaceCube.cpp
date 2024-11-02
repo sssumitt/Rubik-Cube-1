@@ -88,6 +88,7 @@ void FaceCube::updateFacelets(const Cube &cube ) {
     }
 
     // Update edges 
+    
     for(int i = 0 ; i< EDGE_COUNT ; i++) {
 
         int pos = cube.edgePositions[i] ; // get the edge at ith pos 

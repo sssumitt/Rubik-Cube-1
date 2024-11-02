@@ -11,19 +11,16 @@
 
 int main() {
     Cube cube ;
+    cube.applyMove("R ") ;
+    cube.display() ;
+    
+    CoordCube c ;
+    c.set_CoordCube( cube ) ;
 
-    for(int i =0 ; i< 18 ; i++) {
-        Move m = static_cast<Move>(i) ;
-        
-        std::cout << "Move : " << cube.moveToString(m) << std::endl;
-        
-        cube.applyMove(cube.moveToString(m)) ;
+    Cube cube2 = c.getCube( );
 
-        FaceCube fc;
-        fc.updateFacelets(cube) ;
-        fc.printFacelets(cube) ;
-        
-    }
+    cube2.display() ; 
+    
     
     return 0 ; 
 }
