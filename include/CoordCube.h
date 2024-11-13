@@ -20,11 +20,12 @@ class Cube;
 #define N_URtoBR    479001600
 #define N_MOVE      18
 
-
 class CoordCube {
     public: 
         CoordCube();
         void set_CoordCube(Cube &cube);
+        
+        void displayCoord(const Cube &cube);
         Cube getCube() const;
         short twist;
         short flip;
@@ -36,6 +37,5 @@ class CoordCube {
         int URtoDF;
 
 };
-
 
 #endif

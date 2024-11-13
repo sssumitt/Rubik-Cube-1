@@ -38,8 +38,6 @@ static const  char  coB[8]  = { 0, 0, 1, 2, 0, 0, 2, 1 };
 static const Edge       epB[12] = { UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB };
 static const  char  eoB[12] = { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 };
 
-
-
 std::unordered_map<Move, std::string> moveToStringMap = {
     {Move::U, "U"},     {Move::U_PRIME, "U'"}, {Move::U2, "U2"},
     {Move::D, "D"},     {Move::D_PRIME, "D'"}, {Move::D2, "D2"},
@@ -60,7 +58,6 @@ Cube::Cube() {
         cornerPositions[i] = i;
         cornerOrientations[i] = 0;
     }
-
 
 }
 void Cube::display() const{
@@ -216,8 +213,6 @@ std::string Cube::moveToString(Move move) const{
     }
     return "Invalid Move";
 }
-
-
 
 // Template functions for rotating corners and edges
 template <size_t N>
@@ -479,8 +474,6 @@ void Cube::setUBtoDF(short idx)
             a -= Cnk(j, x-- + 1);
         }
 }
-
-
 
 
 void Cube::setURFtoDLF(short idx) {

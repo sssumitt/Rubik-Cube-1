@@ -12,11 +12,10 @@ enum  class Move {
     B, B_PRIME, B2,
 };
 
-enum class Move_P1 {
+enum class Move_P2 {
     U, U_PRIME, U2,
     D, D_PRIME, D2,
     R2, L2, F2, B2
 };
-
 
 #endif // MOVE_H

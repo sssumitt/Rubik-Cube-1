@@ -6,8 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-
-
 // Initialize static member variables
 std::array<std::array<short, N_MOVE>, N_TWIST> MoveTable::twistMove;
 std::array<std::array<short, N_MOVE>, N_FLIP> MoveTable::flipMove;
@@ -17,7 +15,6 @@ std::array<std::array<short, N_MOVE>, N_URtoDF> MoveTable::URtoDF_Move;
 std::array<std::array<short, N_MOVE>, N_URtoUL> MoveTable::URtoUL_Move;
 std::array<std::array<short, N_MOVE>, N_UBtoDF> MoveTable::UBtoDF_Move;
 std::array<std::array<short, 336>, 336> MoveTable::MergeURtoULandUBtoDF;
-
 
 std::array<std::array<short, N_MOVE>, N_PARITY> MoveTable::parityMove= {
     std::array<short, N_MOVE>{ 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 },

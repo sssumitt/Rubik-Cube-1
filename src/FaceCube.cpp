@@ -19,7 +19,6 @@ const FaceCube::EdgeMapping FaceCube::edgeMappings[12] = {
     {B, 3, R, 5},  // BR 11
 };
 
-
 const FaceCube::CornerMapping FaceCube::cornerMappings[8] = {
     {U, 8, R, 0, F, 2}, // URF  0
     {U, 6, F, 0, L, 2}, // UFL  1
@@ -36,8 +35,8 @@ const FaceCube::CornerMapping FaceCube::cornerMappings[8] = {
     
 };
 
-
 // Edge colors in solved state
+//  w, r, g, y, o, b
 const char FaceCube::edgeColors[12][2] = {
     {'W', 'R'}, // UR
     {'W', 'G'}, // UF
@@ -68,7 +67,6 @@ const char FaceCube::cornerColors[8][3] = {
     {'Y', 'R', 'B'}, // DRB
 };
 
-
 FaceCube::FaceCube() {
     // Initialize facelets to default colors
     for (int face = U; face <= B; ++face) {
@@ -76,7 +74,6 @@ FaceCube::FaceCube() {
             facelets[face][index] = colors[face];
         }
     }
-
 
 }
 
@@ -145,20 +142,28 @@ void FaceCube::updateFacelets(const Cube &cube ) {
         facelets[em_i.face3][em_i.index3] = c3 ;
     }
 
-
 }
 
+void FaceCube::updateFacelets_string(const std::string &inputFacelets){
+    int i = 0 ; 
+    for(int face = 0 ; face < 6 ; face++) {
+        for(int index = 0 ; index < 9 ; index++) {
+            facelets[face][index] = inputFacelets[i++] ; 
+        }
+    }
 
+}
 
 
 // Helper function to find edge
 std::tuple<int, char> FaceCube::findEdge(char color1, char color2) const {
     for (int i = 0; i < EDGE_COUNT; ++i) {
+ 
         if ((edgeColors[i][0] == color1 && edgeColors[i][1] == color2)) {
-            return std::make_tuple(i, '0'); // Position, Orientation 0
+            return std::make_tuple(i, 0); // Position, Orientation 0
         }
         if ((edgeColors[i][0] == color2 && edgeColors[i][1] == color1)) {
-            return std::make_tuple(i, '1'); // Position, Orientation 1
+            return std::make_tuple(i, 1); // Position, Orientation 1
         }
     }
     throw std::invalid_argument("Edge not found");
@@ -249,7 +254,7 @@ std::string FaceCube::getFacelets(const Cube &cube) {
 
     for (int face = U; face <= B; ++face) {
         for (int index = 0; index < 9; ++index) {
-            faceletString += colorToString(facelets[face][index]);
+            faceletString += facelets[face][index] ;
         }
     }
     return faceletString;
@@ -257,7 +262,7 @@ std::string FaceCube::getFacelets(const Cube &cube) {
 
 void FaceCube::printFacelets(const Cube &cube) {
     updateFacelets(cube) ;
-  
+
     // Print Up face
     std::cout << "    " << colorToString(facelets[U][0]) << colorToString(facelets[U][1]) << colorToString(facelets[U][2]) << "\n";
     std::cout << "    " << colorToString(facelets[U][3]) << colorToString(facelets[U][4]) << colorToString(facelets[U][5]) << "\n";

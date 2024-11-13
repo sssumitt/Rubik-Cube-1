@@ -2,8 +2,6 @@
 #include "Cube.h"
 #include <iostream>
 
-
-
 CoordCube::CoordCube() {
     // for solved cube 
     twist = 0;
@@ -17,9 +15,8 @@ CoordCube::CoordCube() {
     UBtoDF = 114;
     URtoDF = 0;
 
-
 }
-void displayCoord(const Cube &cube) {
+void CoordCube::displayCoord(const Cube &cube) {
  
     std::cout << "Twist : " << cube.getTwist() << std::endl;
     std::cout << "Flip : " << cube.getFlip() << std::endl;
@@ -49,21 +46,10 @@ Cube CoordCube::getCube() const{
     Cube cube;
     cube.setTwist(twist);
     cube.setFlip(flip);
-
-    cube.display();
-
     cube.setFRtoBR(FRtoBR);
-     std::cout << "FRtoBR : " << FRtoBR << std::endl;
-    cube.display();
     cube.setURFtoDLF(URFtoDLF);
     cube.setURtoUL(URtoUL);
-    std::cout << "getURtoUL : " << URtoUL<< std::endl;
-    cube.display();
     cube.setUBtoDF(UBtoDF);
-         std::cout << "getUBtoDF : " << UBtoDF<< std::endl;
-    cube.display();
     cube.setURtoDF(URtoDF);
-      std::cout << "getURtoDF : " << URtoDF << std::endl;
-    cube.display();
     return cube;
 }

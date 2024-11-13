@@ -53,7 +53,6 @@ class Cube {
         void display() const;
         int verify();
 
-
         // Rotate a specific face of the cube
         void rotateFace(const std::string& move);
 

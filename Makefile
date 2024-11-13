@@ -2,11 +2,13 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -I$(INCLUDE_DIR)
 
+# -fsanitize=undefined -g -Og
+
 # Source files and output
 SRC_DIR = src
 INCLUDE_DIR = include
 
-SRCS = $(SRC_DIR)/Cube.cpp $(SRC_DIR)/CoordCube.cpp $(SRC_DIR)/FaceCube.cpp $(SRC_DIR)/MoveTable.cpp $(SRC_DIR)/pruneTable.cpp $(SRC_DIR)/main.cpp
+SRCS = $(SRC_DIR)/Cube.cpp $(SRC_DIR)/CoordCube.cpp $(SRC_DIR)/FaceCube.cpp $(SRC_DIR)/MoveTable.cpp $(SRC_DIR)/pruneTable.cpp $(SRC_DIR)/Search.cpp $(SRC_DIR)/main.cpp
 OBJS = $(SRCS:.cpp=.o)
 TARGET = cube_solver.exe
 
@@ -26,4 +28,4 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 # Clean the build directory
 clean:
-	del /Q $(SRC_DIR)\*.o $(TARGET)
+	@del /Q $(SRC_DIR)\*.o $(TARGET)

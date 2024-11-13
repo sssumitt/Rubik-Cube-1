@@ -1,4 +1,3 @@
-// PruningTable.cpp
 #include "PruningTable.h"
 #include "CoordCube.h"
 
@@ -30,24 +29,4 @@ bool PruningTable::loadPruningTables(const std::string& directory) {
     }
 
     return success;
-}
-
-// Template function to load a pruning table from a binary file
-template <size_t Size>
-bool PruningTable::loadPruningTableBinary(const std::string& filename, std::array<signed char, Size>& table) {
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "Error opening pruning table file: " << filename << std::endl;
-        return false;
-    }
-
-    // Read the entire table at once
-    file.read(reinterpret_cast<char*>(table.data()), Size * sizeof(signed char));
-
-    if (!file) {
-        std::cerr << "Error reading pruning table from file: " << filename << std::endl;
-        return false;
-    }
-
-    return true;
 }

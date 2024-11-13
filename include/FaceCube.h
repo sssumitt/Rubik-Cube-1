@@ -19,6 +19,7 @@ public:
 
     // Update the facelets of the cube based on the current state of the cube
     void updateFacelets(const Cube &cube);
+    void updateFacelets_string(const std::string &facelets);
 
     Cube getCube()const ;  
 
